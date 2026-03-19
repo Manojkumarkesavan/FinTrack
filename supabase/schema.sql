@@ -194,6 +194,57 @@ create table public.fx_rates (
 );
 
 -- ============================================================
+-- FINANCIAL GOALS
+-- ============================================================
+create table public.financial_goals (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid references public.profiles(id) on delete cascade not null,
+  name text not null,
+  description text,
+  category text not null, -- 'retirement' | 'education' | 'home' | 'vehicle' | 'investment' | 'debt_payoff' | 'savings' | 'other'
+  target_amount numeric(15,2) not null,
+  current_amount numeric(15,2) not null default 0,
+  currency text not null default 'INR',
+  start_date date not null,
+  target_date date not null,
+  priority text not null default 'medium', -- 'low' | 'medium' | 'high'
+  status text not null default 'active', -- 'active' | 'paused' | 'completed' | 'abandoned'
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index financial_goals_user_id_idx on public.financial_goals(user_id);
+create index financial_goals_status_idx on public.financial_goals(status);
+
+-- ============================================================
+-- GOAL MILESTONES (track progress on goals)
+-- ============================================================
+create table public.goal_milestones (
+  id uuid primary key default uuid_generate_v4(),
+  goal_id uuid references public.financial_goals(id) on delete cascade not null,
+  milestone_amount numeric(15,2) not null,
+  target_date date not null,
+  achieved_date date,
+  description text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index goal_milestones_goal_id_idx on public.goal_milestones(goal_id);
+
+-- ============================================================
+-- FX RATES CACHE (refreshed hourly by cron)
+-- ============================================================
+create table public.fx_rates (
+  base_currency text not null,
+  target_currency text not null,
+  rate numeric(20,8) not null,
+  updated_at timestamptz not null default now(),
+  primary key (base_currency, target_currency)
+);
+
+-- ============================================================
 -- ROW LEVEL SECURITY
 -- ============================================================
 alter table public.profiles enable row level security;
@@ -203,6 +254,8 @@ alter table public.transactions enable row level security;
 alter table public.investments enable row level security;
 alter table public.networth_snapshots enable row level security;
 alter table public.insights_cache enable row level security;
+alter table public.financial_goals enable row level security;
+alter table public.goal_milestones enable row level security;
 
 -- Profiles: users can only read/update their own profile
 create policy "profiles_select" on public.profiles for select using (auth.uid() = id);
@@ -231,6 +284,24 @@ create policy "snapshots_insert" on public.networth_snapshots for insert with ch
 -- Insights cache
 create policy "insights_all" on public.insights_cache using (auth.uid() = user_id);
 create policy "insights_insert" on public.insights_cache for insert with check (auth.uid() = user_id);
+
+-- Financial Goals
+create policy "goals_all" on public.financial_goals using (auth.uid() = user_id);
+create policy "goals_insert" on public.financial_goals for insert with check (auth.uid() = user_id);
+
+-- Goal Milestones (access through goals)
+create policy "milestones_select" on public.goal_milestones for select using (
+  goal_id in (select id from public.financial_goals where user_id = auth.uid())
+);
+create policy "milestones_insert" on public.goal_milestones for insert with check (
+  goal_id in (select id from public.financial_goals where user_id = auth.uid())
+);
+create policy "milestones_update" on public.goal_milestones for update using (
+  goal_id in (select id from public.financial_goals where user_id = auth.uid())
+);
+create policy "milestones_delete" on public.goal_milestones for delete using (
+  goal_id in (select id from public.financial_goals where user_id = auth.uid())
+);
 
 -- FX rates: public read, no user write
 alter table public.fx_rates enable row level security;

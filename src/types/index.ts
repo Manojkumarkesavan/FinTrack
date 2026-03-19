@@ -23,6 +23,12 @@ export type Broker = 'zerodha' | 'groww' | 'upstox' | 'manual'
 
 export type Currency = 'INR' | 'USD' | 'EUR' | 'GBP' | 'SGD' | 'AED'
 
+export type GoalCategory = 'retirement' | 'education' | 'home' | 'vehicle' | 'investment' | 'debt_payoff' | 'savings' | 'other'
+
+export type GoalStatus = 'active' | 'paused' | 'completed' | 'abandoned'
+
+export type GoalPriority = 'low' | 'medium' | 'high'
+
 // ============================================================
 // DB Row Types
 // ============================================================
@@ -113,6 +119,35 @@ export interface Investment {
   currency: Currency
   last_refresh: string | null
   import_batch_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface FinancialGoal {
+  id: string
+  user_id: string
+  name: string
+  description: string | null
+  category: GoalCategory
+  target_amount: number
+  current_amount: number
+  currency: Currency
+  start_date: string
+  target_date: string
+  priority: GoalPriority
+  status: GoalStatus
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface GoalMilestone {
+  id: string
+  goal_id: string
+  milestone_amount: number
+  target_date: string
+  achieved_date: string | null
+  description: string | null
   created_at: string
   updated_at: string
 }
@@ -217,6 +252,18 @@ export interface TransactionFormData {
   recurring_frequency?: string
 }
 
+export interface GoalFormData {
+  name: string
+  description?: string
+  category: GoalCategory
+  target_amount: number
+  currency: Currency
+  start_date: string
+  target_date: string
+  priority: GoalPriority
+  notes?: string
+}
+
 // ============================================================
 // Constants
 // ============================================================
@@ -254,6 +301,41 @@ export const CATEGORY_COLORS: Record<AssetCategory, string> = {
 export const LIABILITY_TYPE_LABELS: Record<LiabilityType, string> = {
   home_loan: 'Home Loan', car_loan: 'Car Loan', personal_loan: 'Personal Loan',
   credit_card: 'Credit Card', education_loan: 'Education Loan', other: 'Other'
+}
+
+export const GOAL_CATEGORY_LABELS: Record<GoalCategory, string> = {
+  retirement: 'Retirement',
+  education: 'Education',
+  home: 'Home Purchase',
+  vehicle: 'Vehicle',
+  investment: 'Investment',
+  debt_payoff: 'Debt Payoff',
+  savings: 'Savings',
+  other: 'Other',
+}
+
+export const GOAL_CATEGORY_ICONS: Record<GoalCategory, string> = {
+  retirement: '🏖️',
+  education: '🎓',
+  home: '🏠',
+  vehicle: '🚗',
+  investment: '📈',
+  debt_payoff: '💳',
+  savings: '💰',
+  other: '🎯',
+}
+
+export const GOAL_STATUS_LABELS: Record<GoalStatus, string> = {
+  active: 'Active',
+  paused: 'Paused',
+  completed: 'Completed',
+  abandoned: 'Abandoned',
+}
+
+export const GOAL_PRIORITY_LABELS: Record<GoalPriority, string> = {
+  low: 'Low',
+  medium: 'Medium',
+  high: 'High',
 }
 
 export const formatCurrency = (amount: number, currency: Currency = 'INR'): string => {

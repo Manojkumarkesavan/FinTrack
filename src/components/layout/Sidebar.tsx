@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import ThemeToggle from './ThemeToggle'
 import {
   LayoutDashboard, Wallet, CreditCard, ArrowLeftRight,
   TrendingUp, Target, Lightbulb, Settings, LogOut,
@@ -11,13 +12,13 @@ import {
 import type { Profile } from '@/types'
 import type { User } from '@supabase/supabase-js'
 
-const NAV_ITEMS = [
+const NAV_ITEMS: Array<{ href: string; icon: any; label: string; soon?: boolean }> = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/assets', icon: Wallet, label: 'Assets' },
   { href: '/liabilities', icon: CreditCard, label: 'Liabilities' },
   { href: '/transactions', icon: ArrowLeftRight, label: 'Transactions' },
   { href: '/investments', icon: TrendingUp, label: 'Investments' },
-  { href: '/goals', icon: Target, label: 'Goals', soon: true },
+  { href: '/goals', icon: Target, label: 'Goals' },
   { href: '/insights', icon: Lightbulb, label: 'Insights' },
 ]
 
@@ -39,7 +40,7 @@ export default function Sidebar({ profile, user }: { profile: Profile | null; us
 
   return (
     <aside className={`
-      relative flex flex-col h-full transition-all duration-300 ease-in-out
+      hidden md:flex flex-col h-full transition-all duration-300 ease-in-out
       bg-[hsl(var(--card))] border-r border-[hsl(var(--border))]
       ${collapsed ? 'w-16' : 'w-56'}
     `}>
@@ -90,13 +91,16 @@ export default function Sidebar({ profile, user }: { profile: Profile | null; us
 
       {/* Bottom */}
       <div className="px-2 py-3 border-t border-[hsl(var(--border))] space-y-0.5">
-        <Link
-          href="/settings"
-          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] hover:bg-[hsl(var(--accent))] transition-colors ${collapsed ? 'justify-center' : ''}`}
-        >
-          <Settings className="w-4 h-4 flex-shrink-0" />
-          {!collapsed && 'Settings'}
-        </Link>
+        <div className="flex items-center justify-between px-1">
+          <Link
+            href="/settings"
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] hover:bg-[hsl(var(--accent))] transition-colors flex-1 ${collapsed ? 'justify-center' : ''}`}
+          >
+            <Settings className="w-4 h-4 flex-shrink-0" />
+            {!collapsed && 'Settings'}
+          </Link>
+          {!collapsed && <ThemeToggle />}
+        </div>
 
         <button
           onClick={handleSignOut}

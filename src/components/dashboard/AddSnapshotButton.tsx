@@ -43,10 +43,19 @@ export default function AddSnapshotButton({ summary }: { summary: NetworthSummar
     <button
       onClick={handleSnapshot}
       disabled={loading}
-      className="flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-lg border border-[hsl(var(--border))] text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all disabled:opacity-50"
+      className="flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-lg border border-[hsl(var(--border))] text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      <Camera className="w-3.5 h-3.5" />
-      {loading ? 'Saving...' : 'Save snapshot'}
+      {loading ? (
+        <>
+          <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+          Saving...
+        </>
+      ) : (
+        <>
+          <Camera className="w-3.5 h-3.5" />
+          Save snapshot
+        </>
+      )}
     </button>
   )
 }

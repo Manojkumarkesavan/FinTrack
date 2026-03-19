@@ -26,7 +26,7 @@ export default function TransactionModal({ open, onClose, onSave, transaction }:
   onSave: (data: TransactionFormData) => Promise<void>
   transaction: Transaction | null
 }) {
-  const { register, handleSubmit, watch, reset, formState: { errors, isSubmitting } } = useForm({
+  const { register, handleSubmit, watch, reset, formState: { errors, isSubmitting } } = useForm<any>({
     resolver: zodResolver(schema),
     defaultValues: { type: 'expense' as const, date: format(new Date(), 'yyyy-MM-dd'), is_recurring: false, currency: 'INR' },
   })
@@ -85,7 +85,7 @@ export default function TransactionModal({ open, onClose, onSave, transaction }:
           <div>
             <label className="label">Amount (₹)</label>
             <input {...register('amount')} type="number" step="0.01" placeholder="0.00" className="input-field text-lg font-semibold num" />
-            {errors.amount && <p className="text-xs text-red-400 mt-1">{errors.amount.message}</p>}
+            {(errors as any).amount && <p className="text-xs text-red-400 mt-1">{(errors as any).amount.message}</p>}
           </div>
 
           {/* Category */}
@@ -95,18 +95,18 @@ export default function TransactionModal({ open, onClose, onSave, transaction }:
               <option value="">Select category…</option>
               {categories.map(c => <option key={c}>{c}</option>)}
             </select>
-            {errors.category && <p className="text-xs text-red-400 mt-1">{errors.category.message}</p>}
+            {(errors as any).category && <p className="text-xs text-red-400 mt-1">{(errors as any).category.message}</p>}
           </div>
 
           {/* Description + Date */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="label">Description</label>
-              <input {...register('description')} placeholder="Optional note" className="input-field" />
+              <label className="label text-xs sm:text-sm">Description</label>
+              <input {...register('description')} placeholder="Optional note" className="input-field text-sm" />
             </div>
             <div>
-              <label className="label">Date</label>
-              <input {...register('date')} type="date" className="input-field" />
+              <label className="label text-xs sm:text-sm">Date</label>
+              <input {...register('date')} type="date" className="input-field text-sm" />
             </div>
           </div>
 

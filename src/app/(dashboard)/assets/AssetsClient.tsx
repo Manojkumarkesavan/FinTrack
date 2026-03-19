@@ -104,57 +104,59 @@ export default function AssetsClient({ initialAssets }: { initialAssets: Asset[]
                 {/* Assets table */}
                 <div className="divide-y divide-[hsl(var(--border))]">
                   {items.map(asset => (
-                    <div key={asset.id} className="flex items-center gap-4 px-5 py-3.5 hover:bg-[hsl(var(--accent))] transition-colors group">
+                    <div key={asset.id} className="flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-5 py-2.5 sm:py-3.5 hover:bg-[hsl(var(--accent))] transition-colors text-xs sm:text-sm">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-[hsl(var(--foreground))] truncate">{asset.name}</p>
-                        <p className="text-xs text-[hsl(var(--muted-foreground))] mt-0.5">
+                        <p className="text-xs sm:text-sm font-medium text-[hsl(var(--foreground))] truncate">{asset.name}</p>
+                        <p className="text-[10px] sm:text-xs text-[hsl(var(--muted-foreground))] mt-0.5 truncate">
                           {ASSET_TYPE_LABELS[asset.type]}
                           {asset.institution && ` · ${asset.institution}`}
                         </p>
                       </div>
 
                       {asset.quantity && (
-                        <div className="text-right hidden sm:block">
-                          <p className="text-xs text-[hsl(var(--muted-foreground))]">Qty</p>
-                          <p className="text-sm num">{asset.quantity.toLocaleString('en-IN')}</p>
+                        <div className="text-right hidden sm:block flex-shrink-0">
+                          <p className="text-[10px] sm:text-xs text-[hsl(var(--muted-foreground))]">Qty</p>
+                          <p className="text-xs sm:text-sm num">{asset.quantity.toLocaleString('en-IN')}</p>
                         </div>
                       )}
 
                       {asset.purchase_price && (
-                        <div className="text-right hidden md:block">
+                        <div className="text-right hidden md:block flex-shrink-0">
                           <p className="text-xs text-[hsl(var(--muted-foreground))]">Invested</p>
                           <p className="text-sm num">₹{formatCompact(asset.purchase_price)}</p>
                         </div>
                       )}
 
                       {asset.purchase_price && asset.purchase_price > 0 && (
-                        <div className="text-right hidden md:block">
+                        <div className="text-right hidden md:block flex-shrink-0">
                           <p className="text-xs text-[hsl(var(--muted-foreground))]">P&L</p>
                           <PnL current={asset.current_value} cost={asset.purchase_price} />
                         </div>
                       )}
 
-                      <div className="text-right">
-                        <p className="text-xs text-[hsl(var(--muted-foreground))]">Value</p>
-                        <p className="text-sm font-semibold num text-[hsl(var(--foreground))]">
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-[10px] sm:text-xs text-[hsl(var(--muted-foreground))]">Value</p>
+                        <p className="text-xs sm:text-sm font-semibold num text-[hsl(var(--foreground))]">
                           ₹{formatCompact(asset.current_value)}
                         </p>
                       </div>
 
-                      {/* Actions */}
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {/* Actions - always visible */}
+                      <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
                         <button
                           onClick={() => { setEditing(asset); setModalOpen(true) }}
-                          className="p-1.5 rounded-lg hover:bg-[hsl(var(--accent))] text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors"
+                          className="p-1 sm:p-1.5 rounded-lg hover:bg-blue-500/10 text-blue-400 transition-colors"
+                          title="Edit"
                         >
-                          <Edit2 className="w-3.5 h-3.5" />
+                          <Edit2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDelete(asset.id)}
                           disabled={deleting === asset.id}
-                          className="p-1.5 rounded-lg hover:bg-red-500/10 text-[hsl(var(--muted-foreground))] hover:text-red-400 transition-colors"
+                          className="p-1 sm:p-1.5 rounded-lg hover:bg-red-500/10 text-red-400 transition-colors"
+                          title="Delete"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                         </button>
                       </div>
                     </div>

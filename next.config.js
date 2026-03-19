@@ -1,5 +1,15 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  register: true,
+  skipWaiting: false,
+  dynamicStartUrl: '/',
+  fallbacks: {
+    document: '/offline.html',
+  },
+})
+
+const nextConfig = withPWA({
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
@@ -15,6 +25,6 @@ const nextConfig = {
       },
     ]
   },
-}
+})
 
 module.exports = nextConfig

@@ -64,19 +64,19 @@ export default function LiabilitiesClient({ initialLiabilities }: { initialLiabi
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between animate-fade-in">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4 animate-fade-in">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Liabilities</h1>
-          <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Liabilities</h1>
+          <p className="text-xs sm:text-sm text-[hsl(var(--muted-foreground))] mt-1">
             Outstanding: <span className="text-loss num font-semibold">₹{formatCompact(totalOutstanding)}</span>
             {totalEMI > 0 && <> · EMI: <span className="text-amber-400 num font-semibold">₹{formatCompact(totalEMI)}/mo</span></>}
           </p>
         </div>
         <button
           onClick={() => { setEditing(null); setModalOpen(true) }}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-medium transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-xs sm:text-sm font-medium transition-colors flex-shrink-0"
         >
-          <Plus className="w-4 h-4" /> Add Liability
+          <Plus className="w-3 h-3 sm:w-4 sm:h-4" /> Add Liability
         </button>
       </div>
 
@@ -107,12 +107,12 @@ export default function LiabilitiesClient({ initialLiabilities }: { initialLiabi
                       {l.institution && ` · ${l.institution}`}
                     </p>
                   </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => { setEditing(l); setModalOpen(true) }} className="p-1.5 rounded hover:bg-[hsl(var(--accent))] text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors">
-                      <Edit2 className="w-3.5 h-3.5" />
+                  <div className="flex gap-1">
+                    <button onClick={() => { setEditing(l); setModalOpen(true) }} className="p-1 sm:p-1.5 rounded-lg hover:bg-[hsl(var(--accent))] text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors">
+                      <Edit2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </button>
-                    <button onClick={() => handleDelete(l.id)} className="p-1.5 rounded hover:bg-red-500/10 text-[hsl(var(--muted-foreground))] hover:text-red-400 transition-colors">
-                      <Trash2 className="w-3.5 h-3.5" />
+                    <button onClick={() => handleDelete(l.id)} className="p-1 sm:p-1.5 rounded-lg hover:bg-red-500/10 text-[hsl(var(--muted-foreground))] hover:text-red-400 transition-colors">
+                      <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </button>
                   </div>
                 </div>

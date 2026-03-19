@@ -127,25 +127,36 @@ export default function InvestmentsClient({ initialInvestments }: { initialInves
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between animate-fade-in">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4 animate-fade-in">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Investments</h1>
-          <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">{investments.length} holdings</p>
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Investments</h1>
+          <p className="text-xs sm:text-sm text-[hsl(var(--muted-foreground))] mt-1">{investments.length} holdings</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           {investments.length > 0 && (
-            <button onClick={handleDeleteAll} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[hsl(var(--border))] text-xs text-[hsl(var(--muted-foreground))] hover:text-red-400 hover:border-red-500/30 transition-colors">
-              <Trash2 className="w-3.5 h-3.5" /> Clear all
+            <button onClick={handleDeleteAll} className="flex items-center gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-[hsl(var(--border))] text-xs text-[hsl(var(--muted-foreground))] hover:text-red-400 hover:border-red-500/30 transition-colors">
+              <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> <span className="hidden sm:inline">Clear all</span>
             </button>
           )}
           <input ref={fileRef} type="file" accept=".csv" onChange={handleFileChange} className="hidden" />
           <button
             onClick={() => fileRef.current?.click()}
             disabled={importing}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-medium transition-colors disabled:opacity-60"
+            className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-xs sm:text-sm font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <Upload className="w-4 h-4" />
-            {importing ? 'Importing…' : 'Import CSV'}
+            {importing ? (
+              <>
+                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span className="hidden sm:inline">Importing…</span>
+                <span className="sm:hidden">...</span>
+              </>
+            ) : (
+              <>
+                <Upload className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Import CSV</span>
+                <span className="sm:hidden">CSV</span>
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -160,7 +171,7 @@ export default function InvestmentsClient({ initialInvestments }: { initialInves
 
       {/* Summary cards */}
       {investments.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 animate-fade-in-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 animate-fade-in-2">
           <SummaryCard label="Invested" value={`₹${formatCompact(summary.invested)}`} />
           <SummaryCard label="Current Value" value={`₹${formatCompact(summary.current)}`} />
           <SummaryCard
@@ -185,12 +196,17 @@ export default function InvestmentsClient({ initialInvestments }: { initialInves
                 <span className="text-xs text-[hsl(var(--muted-foreground))]">{items.length} holdings</span>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full text-xs sm:text-sm">
                   <thead>
                     <tr className="border-b border-[hsl(var(--border))]">
-                      {['Symbol', 'Qty', 'Avg Cost', 'LTP', 'Invested', 'Current', 'P&L', 'P&L %'].map(h => (
-                        <th key={h} className="px-4 py-2.5 text-left text-xs font-medium text-[hsl(var(--muted-foreground))]">{h}</th>
-                      ))}
+                      <th className="px-2 sm:px-4 py-2 sm:py-2.5 text-left text-xs font-medium text-[hsl(var(--muted-foreground))]">Symbol</th>
+                      <th className="hidden md:table-cell px-2 sm:px-4 py-2 sm:py-2.5 text-left text-xs font-medium text-[hsl(var(--muted-foreground))]">Qty</th>
+                      <th className="hidden lg:table-cell px-2 sm:px-4 py-2 sm:py-2.5 text-left text-xs font-medium text-[hsl(var(--muted-foreground))]">Avg Cost</th>
+                      <th className="hidden md:table-cell px-2 sm:px-4 py-2 sm:py-2.5 text-left text-xs font-medium text-[hsl(var(--muted-foreground))]">LTP</th>
+                      <th className="hidden lg:table-cell px-2 sm:px-4 py-2 sm:py-2.5 text-left text-xs font-medium text-[hsl(var(--muted-foreground))]">Invested</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-2.5 text-left text-xs font-medium text-[hsl(var(--muted-foreground))]">Current</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-2.5 text-left text-xs font-medium text-[hsl(var(--muted-foreground))]">P&L</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-2.5 text-left text-xs font-medium text-[hsl(var(--muted-foreground))]">P&L %</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[hsl(var(--border))]">
@@ -199,16 +215,16 @@ export default function InvestmentsClient({ initialInvestments }: { initialInves
                       const pnlPct = (inv.invested_value ?? 0) > 0 ? (pnl / inv.invested_value!) * 100 : 0
                       return (
                         <tr key={inv.id} className="hover:bg-[hsl(var(--accent))] transition-colors">
-                          <td className="px-4 py-3 font-medium">{inv.symbol}</td>
-                          <td className="px-4 py-3 num text-[hsl(var(--muted-foreground))]">{inv.quantity.toLocaleString('en-IN')}</td>
-                          <td className="px-4 py-3 num">₹{formatCompact(inv.avg_cost)}</td>
-                          <td className="px-4 py-3 num">{inv.ltp ? `₹${formatCompact(inv.ltp)}` : '—'}</td>
-                          <td className="px-4 py-3 num">₹{formatCompact(inv.invested_value ?? 0)}</td>
-                          <td className="px-4 py-3 num font-medium">₹{formatCompact(inv.current_value ?? 0)}</td>
-                          <td className={`px-4 py-3 num ${pnl >= 0 ? 'text-gain' : 'text-loss'}`}>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3 font-medium text-xs sm:text-sm">{inv.symbol}</td>
+                          <td className="hidden md:table-cell px-2 sm:px-4 py-2 sm:py-3 num text-[hsl(var(--muted-foreground))] text-xs sm:text-sm">{inv.quantity.toLocaleString('en-IN')}</td>
+                          <td className="hidden lg:table-cell px-2 sm:px-4 py-2 sm:py-3 num text-xs sm:text-sm">₹{formatCompact(inv.avg_cost)}</td>
+                          <td className="hidden md:table-cell px-2 sm:px-4 py-2 sm:py-3 num text-xs sm:text-sm">{inv.ltp ? `₹${formatCompact(inv.ltp)}` : '—'}</td>
+                          <td className="hidden lg:table-cell px-2 sm:px-4 py-2 sm:py-3 num text-xs sm:text-sm">₹{formatCompact(inv.invested_value ?? 0)}</td>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3 num font-medium text-xs sm:text-sm">₹{formatCompact(inv.current_value ?? 0)}</td>
+                          <td className={`px-2 sm:px-4 py-2 sm:py-3 num text-xs sm:text-sm ${pnl >= 0 ? 'text-gain' : 'text-loss'}`}>
                             {pnl >= 0 ? '+' : ''}₹{formatCompact(pnl)}
                           </td>
-                          <td className={`px-4 py-3 num text-sm ${pnl >= 0 ? 'text-gain' : 'text-loss'}`}>
+                          <td className={`px-2 sm:px-4 py-2 sm:py-3 num text-xs sm:text-sm ${pnl >= 0 ? 'text-gain' : 'text-loss'}`}>
                             {pnlPct >= 0 ? '+' : ''}{pnlPct.toFixed(2)}%
                           </td>
                         </tr>
@@ -218,6 +234,7 @@ export default function InvestmentsClient({ initialInvestments }: { initialInves
                 </table>
               </div>
             </div>
+
           ))}
         </div>
       )}
@@ -227,9 +244,9 @@ export default function InvestmentsClient({ initialInvestments }: { initialInves
 
 function SummaryCard({ label, value, subValue, color }: { label: string; value: string; subValue?: string; color?: string }) {
   return (
-    <div className="card p-4">
+    <div className="card p-3 sm:p-4">
       <p className="text-xs text-[hsl(var(--muted-foreground))] mb-1">{label}</p>
-      <p className={`text-lg font-semibold num ${color || 'text-[hsl(var(--foreground))]'}`}>{value}</p>
+      <p className={`text-sm sm:text-lg font-semibold num ${color || 'text-[hsl(var(--foreground))]'}`}>{value}</p>
       {subValue && <p className={`text-xs num ${color || 'text-[hsl(var(--muted-foreground))]'}`}>{subValue}</p>}
     </div>
   )

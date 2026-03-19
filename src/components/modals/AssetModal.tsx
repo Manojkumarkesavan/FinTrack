@@ -34,7 +34,7 @@ export default function AssetModal({ open, onClose, onSave, asset }: {
   onSave: (data: AssetFormData) => Promise<void>
   asset: Asset | null
 }) {
-  const { register, handleSubmit, watch, setValue, reset, formState: { errors, isSubmitting } } = useForm({
+  const { register, handleSubmit, watch, setValue, reset, formState: { errors, isSubmitting } } = useForm<any>({
     resolver: zodResolver(schema),
     defaultValues: { currency: 'INR', category: 'equity', type: 'stocks' },
   })
@@ -85,9 +85,9 @@ export default function AssetModal({ open, onClose, onSave, asset }: {
 
         <form onSubmit={handleSubmit(onSave as any)} className="px-6 py-5 space-y-4">
           {/* Category + Type */}
-          <div className="grid grid-cols-2 gap-3">
-            <FormField label="Category" error={errors.category?.message}>
-              <select {...register('category')} className="input-field">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <FormField label="Category" error={(errors.category as any)?.message as string | undefined}>
+              <select {...register('category')} className="input-field text-sm">
                 <option value="bank">Bank & Cash</option>
                 <option value="equity">Equity</option>
                 <option value="debt">Debt</option>
@@ -95,8 +95,8 @@ export default function AssetModal({ open, onClose, onSave, asset }: {
                 <option value="others">Others</option>
               </select>
             </FormField>
-            <FormField label="Asset Type" error={errors.type?.message}>
-              <select {...register('type')} className="input-field">
+            <FormField label="Asset Type" error={(errors.type as any)?.message as string | undefined}>
+              <select {...register('type')} className="input-field text-sm">
                 {availableTypes.map(t => (
                   <option key={t} value={t}>{ASSET_TYPE_LABELS[t]}</option>
                 ))}
@@ -105,50 +105,50 @@ export default function AssetModal({ open, onClose, onSave, asset }: {
           </div>
 
           {/* Name */}
-          <FormField label="Name" error={errors.name?.message}>
+          <FormField label="Name" error={(errors as any).name?.message}>
             <input {...register('name')} placeholder="e.g. HDFC Savings, NIFTY50 ETF…" className="input-field" />
           </FormField>
 
           {/* Value + Currency */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2">
-              <FormField label="Current Value (₹)" error={errors.current_value?.message}>
-                <input {...register('current_value')} type="number" step="0.01" placeholder="0" className="input-field" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="sm:col-span-2">
+              <FormField label="Current Value (₹)" error={(errors as any).current_value?.message}>
+                <input {...register('current_value')} type="number" step="0.01" placeholder="0" className="input-field text-sm" />
               </FormField>
             </div>
             <FormField label="Currency" error={undefined}>
-              <select {...register('currency')} className="input-field">
+              <select {...register('currency')} className="input-field text-sm">
                 {['INR','USD','EUR','GBP','SGD','AED'].map(c => <option key={c}>{c}</option>)}
               </select>
             </FormField>
           </div>
 
           {/* Purchase price */}
-          <FormField label="Purchase / Invested Amount (₹)" error={errors.purchase_price?.message}>
+          <FormField label="Purchase / Invested Amount (₹)" error={(errors as any).purchase_price?.message}>
             <input {...register('purchase_price')} type="number" step="0.01" placeholder="Optional — for P&L tracking" className="input-field" />
           </FormField>
 
           {/* Quantity + Ticker */}
           {needsQuantity && (
-            <div className="grid grid-cols-2 gap-3">
-              <FormField label="Quantity / Units" error={errors.quantity?.message}>
-                <input {...register('quantity')} type="number" step="0.000001" placeholder="0" className="input-field" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <FormField label="Quantity / Units" error={(errors as any).quantity?.message}>
+                <input {...register('quantity')} type="number" step="0.000001" placeholder="0" className="input-field text-sm" />
               </FormField>
               {needsTicker && (
-                <FormField label="Ticker Symbol" error={errors.ticker_symbol?.message}>
-                  <input {...register('ticker_symbol')} placeholder="e.g. RELIANCE, AAPL" className="input-field" />
+                <FormField label="Ticker Symbol" error={(errors as any).ticker_symbol?.message}>
+                  <input {...register('ticker_symbol')} placeholder="e.g. RELIANCE, AAPL" className="input-field text-sm" />
                 </FormField>
               )}
             </div>
           )}
 
           {/* Institution + Notes */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FormField label="Institution / Platform" error={undefined}>
-              <input {...register('institution')} placeholder="e.g. HDFC, Zerodha" className="input-field" />
+              <input {...register('institution')} placeholder="e.g. HDFC, Zerodha" className="input-field text-sm" />
             </FormField>
             <FormField label="Notes" error={undefined}>
-              <input {...register('notes')} placeholder="Optional" className="input-field" />
+              <input {...register('notes')} placeholder="Optional" className="input-field text-sm" />
             </FormField>
           </div>
 
@@ -157,8 +157,13 @@ export default function AssetModal({ open, onClose, onSave, asset }: {
             <button type="button" onClick={onClose} className="flex-1 px-4 py-2.5 rounded-lg border border-[hsl(var(--border))] text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] hover:border-[hsl(var(--border))] transition-colors">
               Cancel
             </button>
-            <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-medium transition-colors disabled:opacity-60">
-              {isSubmitting ? 'Saving…' : asset ? 'Update' : 'Add Asset'}
+            <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              {isSubmitting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Saving…
+                </>
+              ) : asset ? 'Update' : 'Add Asset'}
             </button>
           </div>
         </form>

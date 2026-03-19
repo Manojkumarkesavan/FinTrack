@@ -93,13 +93,20 @@ export default function SettingsClient({ profile, user }: { profile: Profile | n
           </div>
           <div>
             <label className="label">Base Currency</label>
-            <select className="input-field" value={form.base_currency} onChange={e => setForm(p => ({ ...p, base_currency: e.target.value }))}>
+            <select className="input-field" value={form.base_currency} onChange={e => setForm(p => ({ ...p, base_currency: e.target.value as any }))}>
               {['INR', 'USD', 'EUR', 'GBP', 'SGD', 'AED'].map(c => <option key={c}>{c}</option>)}
             </select>
           </div>
         </div>
-        <button onClick={handleSave} disabled={saving} className="mt-4 px-5 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-medium transition-colors disabled:opacity-60">
-          {saving ? 'Saving…' : 'Save Changes'}
+        <button onClick={handleSave} disabled={saving} className="mt-4 px-5 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2">
+          {saving ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Saving…
+            </>
+          ) : (
+            'Save Changes'
+          )}
         </button>
       </Section>
 

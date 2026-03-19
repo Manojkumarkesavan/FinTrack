@@ -34,15 +34,15 @@ export default function NetworthTrend({
   const isGrowing = unique.length >= 2 && unique[unique.length - 1].value >= unique[0].value
 
   return (
-    <div className="card p-5 h-full">
-      <div className="flex items-center justify-between mb-4">
+    <div className="card p-4 sm:p-5 h-full">
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
         <h3 className="text-sm font-semibold text-[hsl(var(--foreground))]">Net Worth Trend</h3>
         <span className="text-xs text-[hsl(var(--muted-foreground))]">All snapshots</span>
       </div>
 
       {unique.length < 2 ? (
         <div className="flex flex-col items-center justify-center h-40 text-[hsl(var(--muted-foreground))]">
-          <p className="text-sm">Save 2+ snapshots to see trend</p>
+          <p className="text-xs sm:text-sm">Save 2+ snapshots to see trend</p>
           <p className="text-xs mt-1">Click "Save snapshot" on the dashboard</p>
         </div>
       ) : (

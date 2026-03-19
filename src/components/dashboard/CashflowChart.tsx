@@ -19,15 +19,15 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export default function CashflowChart({ cashflow }: { cashflow: MonthlyCashflow[] }) {
   return (
-    <div className="card p-5">
-      <div className="flex items-center justify-between mb-4">
+    <div className="card p-4 sm:p-5">
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
         <h3 className="text-sm font-semibold text-[hsl(var(--foreground))]">Monthly Cashflow</h3>
         <span className="text-xs text-[hsl(var(--muted-foreground))]">Last 6 months</span>
       </div>
 
       {cashflow.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-40 text-[hsl(var(--muted-foreground))]">
-          <p className="text-sm">No transactions yet</p>
+          <p className="text-xs sm:text-sm">No transactions yet</p>
           <p className="text-xs mt-1">Add income & expenses to see cashflow</p>
         </div>
       ) : (

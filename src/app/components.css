@@ -1,0 +1,14 @@
+/* Append these to the end of globals.css */
+
+@layer components {
+  .input-field {
+    @apply w-full px-3 py-2.5 rounded-lg bg-[hsl(var(--input))] border border-[hsl(var(--border))]
+      text-sm text-[hsl(var(--foreground))] placeholder:text-[hsl(var(--muted-foreground))]
+      focus:outline-none focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50
+      transition-colors;
+  }
+
+  .label {
+    @apply block text-xs font-medium text-[hsl(var(--muted-foreground))] mb-1.5;
+  }
+}
